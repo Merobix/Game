@@ -8,7 +8,7 @@ import javafx.scene.paint.Color;
  */
 public class Laser {
 
-    private final int START_FRAME = 36;
+    private final int START_FRAME = 38;
 
     private int x, y, w;    //x = middle of laser, w = width
     private int laserKind;     //1 vertical, 2 horizontal, 3 circle

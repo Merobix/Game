@@ -114,15 +114,21 @@ public class Main extends Application {
         if (totalFrames % spawnRate == 0) {
 
             int[] pos = {rand.nextInt(160)};
+            int vertNum = 0;
+            int horiNum = 0;
 
             for (int i = 0; i < spawnAmount; i++) {
 
-                int r = rand.nextInt(5);
+                int r = rand.nextInt(2);
 
-                if (r <= 2)
+                if (r == 0 && horiNum <= 2) {
                     lasers.add(new Laser(pX - 80 + rand.nextInt(160) + 10, 0, 8, 1));
-                else if (r <= 4)
-                    lasers.add(new Laser(0, pY - 50 + rand.nextInt(101), 10, 8));
+                    vertNum++;
+                }
+                else {
+                    lasers.add(new Laser(0, pY - 70 + rand.nextInt(140), 8, 2));
+                    horiNum++;
+                }
                 //else
                     //lasers.add(new Laser(pX - 80 + rand.nextInt(160), pY - 50 + rand.nextInt(101), 50, 3));
             }
