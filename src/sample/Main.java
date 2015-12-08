@@ -1,11 +1,13 @@
 package sample;
 
+import com.sun.javafx.geom.Area;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
@@ -59,7 +61,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        //InputStream song = this.getClass().getClassLoader().getResourceAsStream("/Game/laser.mp3");
+        Image test = new Image("file:laser.mp3");
+        System.out.println(test);
+        //InputStream song = this.getClass().getResourceAsStream("../sample/laser.mp3");
         //System.out.println(song);
         //AudioInputStream ais = AudioSystem.getAudioInputStream(song);
         //laser = AudioSystem.getClip();
@@ -94,9 +98,9 @@ public class Main extends Application {
         primaryStage.setTitle("Game");
         primaryStage.setScene(scene);
 
-        //AudioClip music = new AudioClip("file:music.mp3");
-        //music.setVolume(0.05);
-        //music.play();
+        AudioClip music = new AudioClip("../sample/laser.mp3");
+        music.setVolume(0.5);
+        music.play();
 
         primaryStage.show();
     }
@@ -346,6 +350,8 @@ public class Main extends Application {
                     break;
                 case D: player.setRight(true);
                     break;
+                case E: player.setSlow(true);
+                    break;
             }
         });
 
@@ -358,6 +364,8 @@ public class Main extends Application {
                 case A: player.setLeft(false);
                     break;
                 case D: player.setRight(false);
+                    break;
+                case E: player.setSlow(false);
                     break;
             }
         });

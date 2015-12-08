@@ -13,6 +13,7 @@ public class Player {
     private boolean left, right, up, down;
     private boolean isHit;
     boolean isDead;
+    boolean slow;
 
     private int HP;
 
@@ -54,6 +55,10 @@ public class Player {
         this.down = down;
     }
 
+    public void setSlow(boolean slow) {
+        this.slow = slow;
+    }
+
     public void hit(boolean isHit) {
         this.isHit = isHit;
     }
@@ -70,6 +75,11 @@ public class Player {
             if (HP == 0)
                 isDead = true;
         }
+
+        if (slow)
+            speed = 2;
+        else
+            speed = 3;
 
         if (left)
             x = x < speed ? 0 : x - speed;
