@@ -14,18 +14,16 @@ public class Player {
     private boolean isHit;
     boolean isDead;
 
-    private int life;
-    Image playerIm;
+    private int HP;
 
     private int speed;
 
     public Player() {
         x = 300;
         y = 220;
-        r = 10;
+        r = 8;
         speed = 3;
-        life = 20;
-        playerIm = new Image("file:player.png");
+        HP = 20;
     }
 
     public int getX() {
@@ -67,9 +65,9 @@ public class Player {
     public void update() {
 
         if (isHit) {
-            life--;
+            HP--;
 
-            if (life == 0)
+            if (HP == 0)
                 isDead = true;
         }
 
@@ -86,8 +84,9 @@ public class Player {
 
     public void draw(GraphicsContext g) {
 
-        g.drawImage(playerIm, x, y);
+        g.setFill(Color.RED);
+        g.fillOval(x, y, 2 * r, 2 * r);
         g.setFill(Color.WHITE);
-        g.fillText("Life: " + life, 560, 20);
+        g.fillText("HP: " + HP, 560, 20);
     }
 }

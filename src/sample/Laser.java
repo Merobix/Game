@@ -1,7 +1,11 @@
 package sample;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
+
+import javax.sound.sampled.LineUnavailableException;
+import java.io.IOException;
 
 /**
  * Created by Philip on 06.12.2015.
@@ -14,14 +18,16 @@ public class Laser {
     private int laserKind;     //1 vertical, 2 horizontal, 3 circle
     private boolean damaging;
     private boolean isOver;
+    private boolean soundMaker;
 
     private int callCounter; //for drawing animation
 
-    public Laser(int x, int y, int w, int laserKind) {
+    public Laser(int x, int y, int w, int laserKind, boolean soundMaker) {
         this.x = x;
         this.y = y;
         this.w = w;
         this.laserKind = laserKind;
+        this.soundMaker = soundMaker;
     }
 
     public int getX() {
@@ -50,8 +56,19 @@ public class Laser {
 
     public void update () {
 
-        if (callCounter == START_FRAME)
+        if (callCounter == START_FRAME) {
             damaging = true;
+
+            if (false) {
+                try {
+                    Main.laser.open(Main.ais);
+                } catch (LineUnavailableException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         else if (callCounter > START_FRAME){
             w--;
 
