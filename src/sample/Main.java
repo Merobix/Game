@@ -1,22 +1,17 @@
 package sample;
 
-import com.sun.javafx.geom.Area;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
-import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioPermission;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
+import javax.sound.sampled.*;
+import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,13 +21,12 @@ import java.util.Random;
 public class Main extends Application {
 
     private Stage primary;
-    private Scene menuScene;
 
     private Canvas canvas;
     private GraphicsContext gc;
 
     private Random rand;
-    private boolean debug = true;
+    private final boolean DEBUG = true;
 
     private int fpsCounter;
     private int fps;
@@ -40,7 +34,6 @@ public class Main extends Application {
     private long timeCount; //for fps calc
     private int totalFrames;
 
-    private final int SPAWN_INTERVAL = 100;
     private long spawnRate;
     private int spawnAmount;
     private int score;
@@ -50,10 +43,6 @@ public class Main extends Application {
 
     private Player player;
     private ArrayList<Laser> lasers;
-    private boolean running;
-
-    public static Clip laser;
-    public static AudioInputStream ais;
 
     public static void main(String[] args) {
         launch(args);
@@ -61,14 +50,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Image test = new Image("file:laser.mp3");
-        System.out.println(test);
-        //InputStream song = this.getClass().getResourceAsStream("../sample/laser.mp3");
-        //System.out.println(song);
-        //AudioInputStream ais = AudioSystem.getAudioInputStream(song);
-        //laser = AudioSystem.getClip();
-        //Main.ais = ais;
-
         primary = primaryStage;
 
         canvas = new Canvas(640,480);
@@ -97,10 +78,6 @@ public class Main extends Application {
 
         primaryStage.setTitle("Game");
         primaryStage.setScene(scene);
-
-        AudioClip music = new AudioClip("../sample/laser.mp3");
-        music.setVolume(0.5);
-        music.play();
 
         primaryStage.show();
     }
@@ -141,7 +118,7 @@ public class Main extends Application {
         public void handle(long currentNanoTime) {
 
             // FPS calc
-            if (debug) {
+            if (DEBUG) {
                 if (timeCount > 1000000000) {
                     timeCount = 0;
                     fps = fpsCounter;
@@ -164,7 +141,7 @@ public class Main extends Application {
 
             update();
 
-            if (player.isDead)
+            if (player.isDead())
                 gameOver(scoreMode);
             else
                 draw();
@@ -180,6 +157,7 @@ public class Main extends Application {
 
         //spawn lasers
         if (totalFrames % spawnRate == 0) {
+
             int r = rand.nextInt(6);
             switch (level) {
 
@@ -215,7 +193,6 @@ public class Main extends Application {
                     }
                     break;
 
-                case 6:
                 case 5:
                 case 4:
                     lasers.add(new Laser(pX, pY, 40, 3, false));
@@ -315,9 +292,21 @@ public class Main extends Application {
         Pane pane = new Pane();
         Scene gOScene = new Scene(pane, 640, 480);
 
-        //AudioClip dogSong = new AudioClip("file:dog.mp3");
-        //dogSong.setVolume(0.2);
-        //dogSong.play();
+        Clip song = null;
+
+        try {
+            InputStream defaultSound = new BufferedInputStream(getClass().getResourceAsStream("dog.wav"));
+            AudioInputStream as = AudioSystem.getAudioInputStream(defaultSound);
+            song = AudioSystem.getClip();
+            song.open(as);
+            FloatControl gainControl = (FloatControl) song.getControl(FloatControl.Type.MASTER_GAIN);
+            gainControl.setValue(-15.0f);
+            song.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        final Clip finalSong = song;
 
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, 640, 480);
@@ -331,7 +320,7 @@ public class Main extends Application {
         retry.setLayoutX(265);
         retry.setLayoutY(300);
         retry.setOnAction(event -> {
-            //dogSong.stop();
+            finalSong.stop();
             gameStart(scoreMode);
         });
 

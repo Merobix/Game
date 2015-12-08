@@ -1,7 +1,6 @@
 package sample;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 /**
@@ -12,8 +11,8 @@ public class Player {
     private int x, y, r;
     private boolean left, right, up, down;
     private boolean isHit;
-    boolean isDead;
-    boolean slow;
+    private boolean isDead;
+    private boolean slow;
 
     private int HP;
 
