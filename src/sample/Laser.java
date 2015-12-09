@@ -1,82 +1,87 @@
 package sample;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.FloatControl;
-import java.io.BufferedInputStream;
-import java.io.InputStream;
 
 /**
  * Created by Philip on 06.12.2015.
  */
-public class Laser {
+public abstract class Laser {
 
-    private final int START_FRAME = 38;
+    private int startFrame = 38;
 
     private int x, y, w;    //x = middle of laser, w = width
-    private int laserKind;     //1 vertical, 2 horizontal, 3 circle
     private boolean damaging;
     private boolean isOver;
-    private boolean soundMaker;
 
-    private int callCounter; //for drawing animation
+    private int frameCount; //for drawing animation
 
-    public Laser(int x, int y, int w, int laserKind, boolean soundMaker) {
+    public Laser(int x, int y, int w, int startFrame) {
         this.x = x;
         this.y = y;
         this.w = w;
-        this.laserKind = laserKind;
-        this.soundMaker = soundMaker;
+        this.startFrame = startFrame;
     }
 
     public int getX() {
         return x;
     }
 
+    public void addX(int add) {
+        x += add;
+    }
+
     public int getY() {
         return y;
     }
 
-    public boolean isDamaging() {
-        return damaging;
+    public void addY(int add) {
+        y += add;
     }
 
     public int getW() {
         return w;
     }
 
+    public void addW(int add) {
+        w += add;
+    }
+
+    public void incFC() {
+        frameCount++;
+    }
+
+    public void resetFC() {
+        frameCount = 0;
+    }
+
+    public int getFC() {
+        return frameCount;
+    }
+
+    public int getStartFrame() {
+        return startFrame;
+    }
+
+    public void setDamaging(boolean dmg) {
+        damaging = dmg;
+    }
+
+    public boolean isDamaging() {
+        return damaging;
+    }
+
     public boolean isOver() {
         return isOver;
     }
 
-    public int getLKind() {
-        return laserKind;
-    }
+    abstract public LK getKind();
 
     public void update () {
 
-        if (callCounter == START_FRAME) {
+        if (frameCount == startFrame) {
             damaging = true;
-
-            if (soundMaker) {
-                try {
-                    InputStream defaultSound = new BufferedInputStream(getClass().getResourceAsStream("scope5.wav"));
-                    AudioInputStream as = AudioSystem.getAudioInputStream(defaultSound);
-                    Clip song = AudioSystem.getClip();
-                    song.open(as);
-                    FloatControl gainControl = (FloatControl) song.getControl(FloatControl.Type.MASTER_GAIN);
-                    gainControl.setValue(-20.0f);
-                    song.start();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
         }
-        else if (callCounter > START_FRAME){
+        else if (frameCount > startFrame){
             w--;
 
             if (w == 0)
@@ -85,31 +90,6 @@ public class Laser {
 
     }
 
-    public void draw(GraphicsContext g) {
+    public abstract void draw(GraphicsContext g);
 
-        if (callCounter < START_FRAME) {
-            g.setFill(new Color(1, 0, 0, 0.5).darker());
-
-            if (laserKind == 1)
-                g.fillRect(x - w, 0, 2 * w, 480);
-            else if (laserKind == 2)
-                g.fillRect(0, y - w, 640, 2 * w);
-            else
-                g.fillOval(x - w, y - w, 2 * w, 2 * w);
-        }
-        else {
-            if (w >= 0) {
-                g.setFill(Color.WHITE);
-
-                if (laserKind == 1)
-                    g.fillRect(x - w, 0, 2 * w, 480);
-                else if (laserKind == 2)
-                    g.fillRect(0, y - w, 640, 2 * w);
-                else
-                    g.fillOval(x - w, y - w, 2 * w, 2 * w);
-            }
-        }
-
-        callCounter++;
-    }
 }

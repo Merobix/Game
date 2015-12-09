@@ -163,71 +163,77 @@ public class Main extends Application {
 
                 case 1:
                     if (r < 3)
-                        lasers.add(new Laser(pX + pR, 0, 10, 1, true));
+                        lasers.add(new HLaser(pX + pR, 10, 38));
                     else
-                        lasers.add(new Laser(0, pY + pR, 10, 2, true));
+                        lasers.add(new VLaser(pY + pR, 10, 38));
                     break;
 
                 case 2:
                     if (r < 2) {
                         int temp = pX - 40 + rand.nextInt(80);
-                        lasers.add(new Laser(temp, 0, 10, 1, true));
+                        lasers.add(new HLaser(temp, 10, 38));
 
                         temp = temp < pX ? temp + 20 + rand.nextInt(40 + (pX - temp - 20)) : temp - 20 - rand.nextInt(40 + (temp - pX - 20));
 
-                        lasers.add(new Laser(temp, 0, 10, 1, false));
+                        lasers.add(new HLaser(temp, 10, 38));
                     }
 
                     else if (r < 4) {
                         int temp = pY - 40 + rand.nextInt(80);
-                        lasers.add(new Laser(0, temp, 10, 2, true));
+                        lasers.add(new VLaser(temp, 10, 38));
 
                         temp = temp < pY ? temp + 20 + rand.nextInt(40 + (pY - temp - 20)) : temp - 20 - rand.nextInt(40 - (temp - pY - 20));
 
-                        lasers.add(new Laser(0, temp, 10, 2, false));
+                        lasers.add(new VLaser(temp, 10, 38));
                     }
 
                     else {
-                        lasers.add(new Laser(pX - 40 + rand.nextInt(80), 0, 10, 1, true));
-                        lasers.add(new Laser(0, pY - 40 + rand.nextInt(80), 10, 2, false));
+                        lasers.add(new HLaser(pX - 40 + rand.nextInt(80), 10, 38));
+                        lasers.add(new VLaser(pY - 40 + rand.nextInt(80), 10, 38));
                     }
                     break;
 
+                case 6:
                 case 5:
                 case 4:
-                    lasers.add(new Laser(pX, pY, 40, 3, false));
+                    lasers.add(new CLaser(pX, pY, 40, 38));
 
                 case 3:
                     if (r < 3) {
                         int temp = pX - 80 + rand.nextInt(160);
-                        lasers.add(new Laser(temp, 0, 10, 1, true));
+                        lasers.add(new HLaser(temp, 10, 38));
 
                         temp = temp < pX ? temp + 20 + rand.nextInt(80 + (pX - temp - 20)) : temp - 20 - rand.nextInt(80 + (temp - pX - 20));
 
-                        lasers.add(new Laser(temp, 0, 10, 1, false));
+                        lasers.add(new HLaser(temp, 10, 38));
 
-                        lasers.add(new Laser(0, pY - 80 + rand.nextInt(160), 10, 2, false));
+                        lasers.add(new VLaser(pY - 80 + rand.nextInt(160), 10, 38));
                     }
                     else {
                         int temp = pY - 80 + rand.nextInt(160);
-                        lasers.add(new Laser(0, temp, 10, 2, true));
+                        lasers.add(new VLaser(temp, 10, 38));
 
                         temp = temp < pY ? temp + 20 + rand.nextInt(80 + (pY - temp - 20)) : temp - 20 - rand.nextInt(80 - (temp - pY - 20));
 
-                        lasers.add(new Laser(0, temp, 10, 2, false));
+                        lasers.add(new VLaser(temp, 10, 38));
 
-                        lasers.add(new Laser(pX - 80 + rand.nextInt(160), 0, 10, 1, false));
+                        lasers.add(new HLaser(pX - 80 + rand.nextInt(160), 10, 38));
                     }
             }
         }
 
         //increase spawn Rate
-        if (totalFrames <= 2400) {
+        if (totalFrames <= 3000) {
             if (totalFrames % 600 == 0) {
-                spawnRate -= 15;
+                spawnRate -= 10;
 
-                if (level <= 6)
-                    level++;
+                level++;
+
+                if (level == 5)
+                    lasers.add(new HMLaser(320, 15, 60));
+
+                if (level == 6)
+                    lasers.add(new VMLaser(320, 15, 60));
 
                 if (spawnAmount < 3)
                     spawnAmount++;
@@ -245,19 +251,23 @@ public class Main extends Application {
 
             if (l.isDamaging()) {
 
-                int kind = l.getLKind();
+                switch (l.getKind()) {
 
-                if (kind == 2) {
-                    if (pY < l.getY() + l.getW() && pY + 2 * pR > l.getY() - l.getW())
-                        player.hit(true);
+                    case V:
+                        if (pY < l.getY() + l.getW() && pY + 2 * pR > l.getY() - l.getW())
+                            player.hit(true);
+                        break;
+
+                    case H:
+                        if (pX < l.getX() + l.getW() && pX + 2 * pR > l.getX() - l.getW())
+                            player.hit(true);
+                        break;
+
+                    case C:
+                        if (Math.sqrt(Math.pow(pX + pR - l.getX(), 2) + Math.pow(pY + pR - l.getY(), 2)) <= pR + l.getW())
+                            player.hit(true);
+                        break;
                 }
-                else if (kind == 1) {
-                    if (pX < l.getX() + l.getW() && pX + 2 * pR > l.getX() - l.getW())
-                        player.hit(true);
-                }
-                else
-                    if (Math.sqrt(Math.pow(pX + pR - l.getX(), 2) + Math.pow(pY + pR - l.getY(), 2)) <= pR + l.getW())
-                        player.hit(true);
             }
 
             l.update();
@@ -293,7 +303,7 @@ public class Main extends Application {
         Scene gOScene = new Scene(pane, 640, 480);
 
         Clip song = null;
-
+        if (false)
         try {
             InputStream defaultSound = new BufferedInputStream(getClass().getResourceAsStream("dog.wav"));
             AudioInputStream as = AudioSystem.getAudioInputStream(defaultSound);
@@ -320,7 +330,7 @@ public class Main extends Application {
         retry.setLayoutX(265);
         retry.setLayoutY(300);
         retry.setOnAction(event -> {
-            finalSong.stop();
+            //finalSong.stop();
             gameStart(scoreMode);
         });
 
