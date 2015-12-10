@@ -1,8 +1,5 @@
 package sample;
 
-
-import javafx.application.Platform;
-
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -20,11 +17,9 @@ public class SoundMaker {
     private Clip laser;
     private Clip dog;
 
-    private int frameCount;
-
     public void initializeSounds() {
         try {
-            InputStream defaultSound = new BufferedInputStream(getClass().getResourceAsStream("scope5.wav"));
+            InputStream defaultSound = getClass().getResourceAsStream("scope5.wav");
             AudioInputStream as = AudioSystem.getAudioInputStream(defaultSound);
             laser = AudioSystem.getClip();
             laser.open(as);

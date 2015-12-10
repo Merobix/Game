@@ -101,9 +101,9 @@ public class Player {
             g.setFill(Color.WHITE);
         else
             g.setFill(Color.RED);
-        g.fillRect(570, 300 - 10 * HP, 20, 10 * HP);
+        g.fillRect(600, 400 - 10 * HP, 20, 10 * HP);
 
         g.setFill(Color.WHITE);
-        g.fillText("HP : " + HP, 570, 320);
+        g.fillText("HP : " + HP, 590, 420);
     }
 }

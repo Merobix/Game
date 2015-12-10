@@ -2,13 +2,10 @@ package sample;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -38,10 +35,11 @@ public class Main extends Application {
 
     private int totalFrames;
 
-    private long spawnRate;
+    private int spawnRate;
     private int spawnAmount;
     private int score;
     private int level;
+    private Mode gameMode;
 
     private SoundMaker sounds;
     private GameLoop gameLoop;
@@ -68,6 +66,7 @@ public class Main extends Application {
 
         ImageView title = new ImageView(getClass().getResource("Title.png").toString());
         ImageView button = new ImageView(getClass().getResource("Button.png").toString());
+
         title.setLayoutX(80);
         title.setLayoutY(20);
         button.setLayoutX(220);
@@ -120,6 +119,10 @@ public class Main extends Application {
                 spawnRate = 90;    //1.5 seconds
                 spawnAmount = 1;
                 level = 1;
+                gameMode = new ScoreMode(player, rand, sounds);
+            }
+            else {
+                gameMode = new MusicMode(player, rand);
             }
         }
 
@@ -127,7 +130,7 @@ public class Main extends Application {
 
             // FPS calc
             if (DEBUG) {
-                if (timeCount > 1000000000) {
+                if (timeCount >= 1000000000) {
                     timeCount = 0;
                     fps = fpsCounter;
                     fpsCounter = 0;
@@ -138,17 +141,10 @@ public class Main extends Application {
 
                 prevTime = currentNanoTime;
             }
+
             totalFrames++;
 
-            // background image clears canvas
-            gc.setFill(Color.BLACK);
-            gc.fillRect(0, 0, 640, 480);
-            gc.setFill(Color.WHITE);
-            gc.fillText(Integer.toString(fps) + " FPS", 10, 20);
-            gc.fillText("Score: " + score, 560, 40);
-            gc.fillText("Time: " + totalFrames / 60, 560, 80);
-
-            update();
+            update(scoreMode);
 
             if (player.isDead())
                 gameOver(scoreMode);
@@ -158,100 +154,35 @@ public class Main extends Application {
     }
 
 
-    private void update() {
+    private void update(boolean scoreMode) {
 
         int pX = player.getX();
         int pY = player.getY();
         int pR = player.getR();
 
-        //spawn lasers
-        if (totalFrames % spawnRate == 0) {
-
-            sounds.playLaser();
-
-            int r = rand.nextInt(6);
-            switch (level) {
-
-                case 1:
-                    if (r < 3)
-                        lasers.add(new HLaser(pX + pR, 10, 38));
-                    else
-                        lasers.add(new VLaser(pY + pR, 10, 38));
-                    break;
-
-                case 2:
-                    if (r < 2) {
-                        int temp = pX - 40 + rand.nextInt(80);
-                        lasers.add(new HLaser(temp, 10, 38));
-
-                        temp = temp < pX ? temp + 20 + rand.nextInt(40 + (pX - temp - 20)) : temp - 20 - rand.nextInt(40 + (temp - pX - 20));
-
-                        lasers.add(new HLaser(temp, 10, 38));
-                    }
-
-                    else if (r < 4) {
-                        int temp = pY - 40 + rand.nextInt(80);
-                        lasers.add(new VLaser(temp, 10, 38));
-
-                        temp = temp < pY ? temp + 20 + rand.nextInt(40 + (pY - temp - 20)) : temp - 20 - rand.nextInt(40 - (temp - pY - 20));
-
-                        lasers.add(new VLaser(temp, 10, 38));
-                    }
-
-                    else {
-                        lasers.add(new HLaser(pX - 40 + rand.nextInt(80), 10, 38));
-                        lasers.add(new VLaser(pY - 40 + rand.nextInt(80), 10, 38));
-                    }
-                    break;
-
-                case 6:
-                case 5:
-                case 4:
-                    lasers.add(new CLaser(pX, pY, 40, 38));
-
-                case 3:
-                    if (r < 3) {
-                        int temp = pX - 80 + rand.nextInt(160);
-                        lasers.add(new HLaser(temp, 10, 38));
-
-                        temp = temp < pX ? temp + 20 + rand.nextInt(80 + (pX - temp - 20)) : temp - 20 - rand.nextInt(80 + (temp - pX - 20));
-
-                        lasers.add(new HLaser(temp, 10, 38));
-
-                        lasers.add(new VLaser(pY - 80 + rand.nextInt(160), 10, 38));
-                    }
-                    else {
-                        int temp = pY - 80 + rand.nextInt(160);
-                        lasers.add(new VLaser(temp, 10, 38));
-
-                        temp = temp < pY ? temp + 20 + rand.nextInt(80 + (pY - temp - 20)) : temp - 20 - rand.nextInt(80 - (temp - pY - 20));
-
-                        lasers.add(new VLaser(temp, 10, 38));
-
-                        lasers.add(new HLaser(pX - 80 + rand.nextInt(160), 10, 38));
-                    }
-            }
-        }
+        gameMode.spawnLasers(totalFrames, spawnRate, lasers, level);
 
         //increase spawn difficulty
-        if (totalFrames <= 3000) {
-            if (totalFrames % 600 == 0) {
+        if (scoreMode)
 
-                if (spawnRate > 60)
-                    spawnRate -= 10;
+            if (totalFrames <= 3000) {
+                if (totalFrames % 600 == 0) {
 
-                level++;
+                    if (spawnRate > 60)
+                        spawnRate -= 10;
 
-                if (level == 5)
-                    lasers.add(new HMLaser(320, 15, 60));
+                    level++;
 
-                if (level == 6)
-                    lasers.add(new VMLaser(320, 15, 60));
+                    if (level == 5)
+                        lasers.add(new HMLaser(320, 15, 60));
 
-                if (spawnAmount < 3)
-                    spawnAmount++;
+                    if (level == 6)
+                        lasers.add(new VMLaser(320, 15, 60));
+
+                    if (spawnAmount < 3)
+                        spawnAmount++;
+                }
             }
-        }
 
         //hit detection + update
         player.hit(false);
@@ -295,14 +226,23 @@ public class Main extends Application {
 
     private void draw() {
 
+        // background image clears canvas
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0, 0, 640, 480);
+
         for (Laser l : lasers)
             l.draw(gc);
 
         player.draw(gc);
 
         gc.setFill(Color.WHITE);
-        gc.fillText("Level: " + level, 560, 60);
-        gc.fillText("Speed:  " + String.format("%.2g",(double) 60 /  spawnRate) + " waves / sec", 250, 20);
+        gc.fillText(Integer.toString(fps) + " FPS", 10, 20);
+        gc.fillText("Score: " + score, 560, 20);
+        gc.fillText("Time: " + totalFrames / 60, 560, 40);
+        gc.setFont(new Font(20));
+        gc.fillText("Level: " + level, 280, 30);
+        gc.setFont(new Font(12));
+        //gc.fillText("Speed:  " + String.format("%.2g",(double) 60 /  spawnRate) + " waves / sec", 250, 20);
 
 
     }
