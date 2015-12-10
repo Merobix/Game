@@ -6,13 +6,12 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import javax.sound.sampled.*;
-import java.io.BufferedInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
@@ -32,6 +31,7 @@ public class Main extends Application {
     private int fps;
     private long prevTime;
     private long timeCount; //for fps calc
+
     private int totalFrames;
 
     private long spawnRate;
@@ -39,6 +39,7 @@ public class Main extends Application {
     private int score;
     private int level;
 
+    private SoundMaker sounds;
     private GameLoop gameLoop;
 
     private Player player;
@@ -54,19 +55,27 @@ public class Main extends Application {
 
         canvas = new Canvas(640,480);
         gc = canvas.getGraphicsContext2D();
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0, 0, 640, 480);
 
         Pane menu = new Pane();
 
         Scene scene = new Scene(menu, 640, 480);
+
+        ImageView title = new ImageView(getClass().getResource("Title.png").toString());
+        title.setLayoutX(80);
+        title.setLayoutY(20);
+
         Button b1 = new Button();
         Button b2 = new Button();
 
+        b1.setFont(new Font("Arial", 20));
         b1.setText("Score Mode");
         b2.setText("Music Mode");
 
-        b1.setPrefSize(100, 50);
-        b1.setLayoutX(270);
-        b1.setLayoutY(100);
+        b1.setPrefSize(200, 100);
+        b1.setLayoutX(220);
+        b1.setLayoutY(150);
         b1.setOnAction(event -> gameStart(true));
 
         b2.setPrefSize(100, 50);
@@ -74,7 +83,10 @@ public class Main extends Application {
         b2.setLayoutY(200);
         b2.setOnAction(event -> gameStart(false));
 
-        menu.getChildren().addAll(canvas, b1);
+        menu.getChildren().addAll(canvas, b1, title);
+
+        sounds = new SoundMaker();
+        sounds.initializeSounds();
 
         primaryStage.setTitle("Game");
         primaryStage.setScene(scene);
@@ -158,6 +170,8 @@ public class Main extends Application {
         //spawn lasers
         if (totalFrames % spawnRate == 0) {
 
+            sounds.playLaser();
+
             int r = rand.nextInt(6);
             switch (level) {
 
@@ -222,10 +236,12 @@ public class Main extends Application {
             }
         }
 
-        //increase spawn Rate
+        //increase spawn difficulty
         if (totalFrames <= 3000) {
             if (totalFrames % 600 == 0) {
-                spawnRate -= 10;
+
+                if (spawnRate > 60)
+                    spawnRate -= 10;
 
                 level++;
 
@@ -246,9 +262,7 @@ public class Main extends Application {
         Iterator<Laser> it = lasers.iterator();
 
         while (it.hasNext()) {
-
             Laser l = it.next();
-
             if (l.isDamaging()) {
 
                 switch (l.getKind()) {
@@ -302,21 +316,7 @@ public class Main extends Application {
         Pane pane = new Pane();
         Scene gOScene = new Scene(pane, 640, 480);
 
-        Clip song = null;
-        if (false)
-        try {
-            InputStream defaultSound = new BufferedInputStream(getClass().getResourceAsStream("dog.wav"));
-            AudioInputStream as = AudioSystem.getAudioInputStream(defaultSound);
-            song = AudioSystem.getClip();
-            song.open(as);
-            FloatControl gainControl = (FloatControl) song.getControl(FloatControl.Type.MASTER_GAIN);
-            gainControl.setValue(-15.0f);
-            song.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        final Clip finalSong = song;
+        sounds.playDog();
 
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, 640, 480);
@@ -330,7 +330,7 @@ public class Main extends Application {
         retry.setLayoutX(265);
         retry.setLayoutY(300);
         retry.setOnAction(event -> {
-            //finalSong.stop();
+            sounds.stopDog();
             gameStart(scoreMode);
         });
 
