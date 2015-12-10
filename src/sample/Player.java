@@ -2,6 +2,7 @@ package sample;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 /**
  * Created by Philip on 04.12.2015.
@@ -95,7 +96,14 @@ public class Player {
 
         g.setFill(Color.RED);
         g.fillOval(x, y, 2 * r, 2 * r);
+
+        if (HP > 5)
+            g.setFill(Color.WHITE);
+        else
+            g.setFill(Color.RED);
+        g.fillRect(570, 300 - 10 * HP, 20, 10 * HP);
+
         g.setFill(Color.WHITE);
-        g.fillText("HP: " + HP, 560, 20);
+        g.fillText("HP : " + HP, 570, 320);
     }
 }
