@@ -2,11 +2,15 @@ package sample;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -63,32 +67,23 @@ public class Main extends Application {
         Scene scene = new Scene(menu, 640, 480);
 
         ImageView title = new ImageView(getClass().getResource("Title.png").toString());
+        ImageView button = new ImageView(getClass().getResource("Button.png").toString());
         title.setLayoutX(80);
         title.setLayoutY(20);
+        button.setLayoutX(220);
+        button.setLayoutY(140);
 
-        Button b1 = new Button();
-        Button b2 = new Button();
+        button.addEventHandler(MouseEvent.MOUSE_CLICKED, event ->  {
+                gameStart(true);
+                event.consume();
+        });
 
-        b1.setFont(new Font("Arial", 20));
-        b1.setText("Score Mode");
-        b2.setText("Music Mode");
-
-        b1.setPrefSize(200, 100);
-        b1.setLayoutX(220);
-        b1.setLayoutY(150);
-        b1.setOnAction(event -> gameStart(true));
-
-        b2.setPrefSize(100, 50);
-        b2.setLayoutX(270);
-        b2.setLayoutY(200);
-        b2.setOnAction(event -> gameStart(false));
-
-        menu.getChildren().addAll(canvas, b1, title);
+        menu.getChildren().addAll(canvas, button, title);
 
         sounds = new SoundMaker();
         sounds.initializeSounds();
 
-        primaryStage.setTitle("Game");
+        primaryStage.setTitle("Laser Mania");
         primaryStage.setScene(scene);
 
         primaryStage.show();
@@ -100,6 +95,7 @@ public class Main extends Application {
 
         Pane gamePane = new Pane();
         Scene gameScene = new Scene(gamePane, 640, 480);
+        gameScene.setCursor(Cursor.NONE);
         setKeys(gameScene);
 
         gamePane.getChildren().add(canvas);
@@ -148,8 +144,9 @@ public class Main extends Application {
             gc.setFill(Color.BLACK);
             gc.fillRect(0, 0, 640, 480);
             gc.setFill(Color.WHITE);
-            gc.fillText(Integer.toString(fps), 10, 20);
-            gc.fillText("Score: " + Integer.toString(score), 560, 40);
+            gc.fillText(Integer.toString(fps) + " FPS", 10, 20);
+            gc.fillText("Score: " + score, 560, 40);
+            gc.fillText("Time: " + totalFrames / 60, 560, 80);
 
             update();
 
@@ -302,6 +299,7 @@ public class Main extends Application {
             l.draw(gc);
 
         player.draw(gc);
+
         gc.setFill(Color.WHITE);
         gc.fillText("Level: " + level, 560, 60);
         gc.fillText("Speed:  " + String.format("%.2g",(double) 60 /  spawnRate) + " waves / sec", 250, 20);
@@ -324,15 +322,15 @@ public class Main extends Application {
         gc.fillText("GAME OVER", 280, 200);
         gc.fillText("Score:     " + score, 280, 240);
 
-        Button retry = new Button();
-        retry.setText("Retry");
-        retry.setPrefSize(100, 50);
-        retry.setLayoutX(265);
-        retry.setLayoutY(300);
-        retry.setOnAction(event -> {
-            sounds.stopDog();
-            gameStart(scoreMode);
+        ImageView retry = new ImageView(getClass().getResource("Retry.png").toString());
+        retry.addEventHandler(MouseEvent.MOUSE_CLICKED, event ->  {
+                sounds.stopDog();
+                gameStart(true);
+                event.consume();
         });
+        retry.setLayoutX(220);
+        retry.setLayoutY(300);
+
 
         pane.getChildren().addAll(canvas, retry);
         primary.setScene(gOScene);
@@ -351,6 +349,14 @@ public class Main extends Application {
                     break;
                 case E: player.setSlow(true);
                     break;
+                case UP: player.setUp(true);
+                    break;
+                case DOWN: player.setDown(true);
+                    break;
+                case LEFT: player.setLeft(true);
+                    break;
+                case RIGHT: player.setRight(true);
+                    break;
             }
         });
 
@@ -365,6 +371,14 @@ public class Main extends Application {
                 case D: player.setRight(false);
                     break;
                 case E: player.setSlow(false);
+                    break;
+                case UP: player.setUp(false);
+                    break;
+                case DOWN: player.setDown(false);
+                    break;
+                case LEFT: player.setLeft(false);
+                    break;
+                case RIGHT: player.setRight(false);
                     break;
             }
         });

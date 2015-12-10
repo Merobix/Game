@@ -60,7 +60,7 @@ public class SoundMaker {
 
     public void playDog() {
         dog.setFramePosition(0);
-        dog.start();
+        dog.loop(Clip.LOOP_CONTINUOUSLY);
     }
 
     public void stopDog() {
