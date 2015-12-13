@@ -1,25 +1,41 @@
-package sample;
+package lasermania.lasers;
 
 import javafx.scene.canvas.GraphicsContext;
 
 /**
- * Created by Philip on 06.12.2015.
+ *  Created by Philip on 06.12.2015.
  */
 public abstract class Laser {
 
-    private int startFrame = 38;
+    private int startFrame;
 
-    private int x, y, w;    //x = middle of laser, w = width
+    private int x, y, w;    // w = width
+    private float origW;
     private boolean damaging;
     private boolean isOver;
+    private float redW;
+    private int delay;
 
     private int frameCount; //for drawing animation
 
+    //specific delay for music mode
+    public Laser(int x, int y, int w, int startFrame, int delay) {
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        origW = w;
+        this.startFrame = startFrame;
+        this.delay = delay;
+    }
+
+    //standard delay for score mode
     public Laser(int x, int y, int w, int startFrame) {
         this.x = x;
         this.y = y;
         this.w = w;
+        origW = w;
         this.startFrame = startFrame;
+        this.delay = 20;
     }
 
     public int getX() {
@@ -74,6 +90,17 @@ public abstract class Laser {
         return isOver;
     }
 
+    public float getRedW() {
+        return redW;
+    }
+
+    public void incRedW () {
+        if (delay <= 0)
+            redW = w;
+        else
+            redW += ((float) w) / delay;
+    }
+
     abstract public LK getKind();
 
     public void update () {
@@ -82,7 +109,7 @@ public abstract class Laser {
             damaging = true;
         }
         else if (frameCount > startFrame){
-            w--;
+            w -= origW / 20;
 
             if (w == 0)
                 isOver = true;

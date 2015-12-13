@@ -1,4 +1,4 @@
-package sample;
+package lasermania.lasers;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;

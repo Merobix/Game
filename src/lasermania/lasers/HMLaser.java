@@ -1,10 +1,10 @@
-package sample;
+package lasermania.lasers;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 /**
- * Created by Philip on 09.12.2015.
+ *  Created by Philip on 09.12.2015.
  */
 public class HMLaser extends HLaser{
 

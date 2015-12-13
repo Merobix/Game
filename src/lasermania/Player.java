@@ -1,8 +1,7 @@
-package sample;
+package lasermania;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 
 /**
  * Created by Philip on 04.12.2015.

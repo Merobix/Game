@@ -1,4 +1,4 @@
-package sample;
+package lasermania.lasers;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -12,6 +12,10 @@ public class CLaser extends Laser {
         super(x, y, w, startFrame);
     }
 
+    public CLaser(int x, int y, int w, int startFrame, int delay) {
+        super(x, y, w, startFrame, delay);
+    }
+
     public LK getKind() {
         return LK.C;
     }
@@ -23,8 +27,14 @@ public class CLaser extends Laser {
         int w = getW();
 
         if (getFC() < getStartFrame()) {
+
+            if (getRedW() < w - 0.1)
+                incRedW();
+
+            float redW = getRedW();
+
             g.setFill(new Color(1, 0, 0, 0.5).darker());
-            g.fillOval(x - w, y - w, 2 * w, 2 * w);
+            g.fillOval(x - redW, y - redW, 2 * redW, 2 * redW);
         }
         else {
             if (w >= 0) {

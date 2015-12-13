@@ -1,10 +1,15 @@
-package sample;
+package lasermania;
+
+import lasermania.lasers.CLaser;
+import lasermania.lasers.HLaser;
+import lasermania.lasers.Laser;
+import lasermania.lasers.VLaser;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * Created by Philip on 10.12.2015.
+ *  Created by Philip on 10.12.2015.
  */
 public class ScoreMode implements Mode {
 

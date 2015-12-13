@@ -1,4 +1,6 @@
-package sample;
+package lasermania;
+
+import lasermania.lasers.Laser;
 
 import java.util.ArrayList;
 

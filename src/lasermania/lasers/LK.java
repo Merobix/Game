@@ -1,4 +1,4 @@
-package sample;
+package lasermania.lasers;
 
 /**
  * Created by Philip on 09.12.2015.

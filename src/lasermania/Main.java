@@ -1,4 +1,4 @@
-package sample;
+package lasermania;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -12,6 +12,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import lasermania.lasers.HMLaser;
+import lasermania.lasers.Laser;
+import lasermania.lasers.VMLaser;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,9 +28,9 @@ public class Main extends Application {
     private Canvas canvas;
     private GraphicsContext gc;
 
-    private Random rand;
     private final boolean DEBUG = true;
 
+    private boolean scoreMode;
     private int fpsCounter;
     private int fps;
     private long prevTime;
@@ -64,20 +67,28 @@ public class Main extends Application {
 
         Scene scene = new Scene(menu, 640, 480);
 
-        ImageView title = new ImageView(getClass().getResource("Title.png").toString());
-        ImageView button = new ImageView(getClass().getResource("Button.png").toString());
+        ImageView title = new ImageView(getClass().getResource("media/Title.png").toString());
+        ImageView button1 = new ImageView(getClass().getResource("media/Button.png").toString());
+        ImageView button2 = new ImageView(getClass().getResource("media/bp.png").toString());
 
         title.setLayoutX(80);
         title.setLayoutY(20);
-        button.setLayoutX(220);
-        button.setLayoutY(140);
+        button1.setLayoutX(220);
+        button1.setLayoutY(140);
+        button2.setLayoutX(220);
+        button2.setLayoutY(240);
 
-        button.addEventHandler(MouseEvent.MOUSE_CLICKED, event ->  {
+        button1.addEventHandler(MouseEvent.MOUSE_CLICKED, event ->  {
                 gameStart(true);
                 event.consume();
         });
 
-        menu.getChildren().addAll(canvas, button, title);
+        button2.addEventHandler(MouseEvent.MOUSE_CLICKED, event ->  {
+            gameStart(false);
+            event.consume();
+        });
+
+        menu.getChildren().addAll(canvas, button1, button2, title);
 
         sounds = new SoundMaker();
         sounds.initializeSounds();
@@ -89,6 +100,9 @@ public class Main extends Application {
     }
 
     private void gameStart(boolean scoreMode) {
+        if (scoreMode)
+            this.scoreMode = true;
+
         totalFrames = 0;
         score = 0;
 
@@ -101,19 +115,16 @@ public class Main extends Application {
 
         primary.setScene(gameScene);
 
-        gameLoop = new GameLoop(scoreMode);
+        gameLoop = new GameLoop();
         gameLoop.start();
     }
 
     private class GameLoop extends AnimationTimer {
 
-        private boolean scoreMode;
-
-        public GameLoop(boolean scoreMode){
+        public GameLoop(){
             player = new Player();
             lasers = new ArrayList<Laser>();
-            rand = new Random();
-            this.scoreMode = scoreMode;
+            Random rand = new Random();
 
             if (scoreMode) {
                 spawnRate = 90;    //1.5 seconds
@@ -123,6 +134,7 @@ public class Main extends Application {
             }
             else {
                 gameMode = new MusicMode(player, rand);
+                sounds.playBP();
             }
         }
 
@@ -235,21 +247,24 @@ public class Main extends Application {
 
         player.draw(gc);
 
-        gc.setFill(Color.WHITE);
-        gc.fillText(Integer.toString(fps) + " FPS", 10, 20);
-        gc.fillText("Score: " + score, 560, 20);
-        gc.fillText("Time: " + totalFrames / 60, 560, 40);
-        gc.setFont(new Font(20));
-        gc.fillText("Level: " + level, 280, 30);
-        gc.setFont(new Font(12));
-        //gc.fillText("Speed:  " + String.format("%.2g",(double) 60 /  spawnRate) + " waves / sec", 250, 20);
-
+        if (scoreMode) {
+            gc.setFill(Color.WHITE);
+            gc.fillText(Integer.toString(fps) + " FPS", 10, 20);
+            gc.fillText("Score: " + score, 560, 20);
+            gc.fillText("Time: " + totalFrames / 60, 560, 40);
+            gc.setFont(new Font(20));
+            gc.fillText("Level: " + level, 280, 30);
+            gc.setFont(new Font(12));
+            //gc.fillText("Speed:  " + String.format("%.2g",(double) 60 /  spawnRate) + " waves / sec", 250, 20);
+        }
 
     }
 
     private void gameOver(boolean scoreMode) {
 
         gameLoop.stop();
+
+        sounds.stopBP();
 
         Pane pane = new Pane();
         Scene gOScene = new Scene(pane, 640, 480);
@@ -262,10 +277,10 @@ public class Main extends Application {
         gc.fillText("GAME OVER", 280, 200);
         gc.fillText("Score:     " + score, 280, 240);
 
-        ImageView retry = new ImageView(getClass().getResource("Retry.png").toString());
+        ImageView retry = new ImageView(getClass().getResource("media/Retry.png").toString());
         retry.addEventHandler(MouseEvent.MOUSE_CLICKED, event ->  {
                 sounds.stopDog();
-                gameStart(true);
+                gameStart(scoreMode);
                 event.consume();
         });
         retry.setLayoutX(220);
