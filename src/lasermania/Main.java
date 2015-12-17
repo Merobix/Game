@@ -12,9 +12,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import lasermania.lasers.HMLaser;
-import lasermania.lasers.Laser;
 import lasermania.lasers.VMLaser;
+import lasermania.lasers.Laser;
+import lasermania.lasers.HMLaser;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -186,10 +186,10 @@ public class Main extends Application {
                     level++;
 
                     if (level == 5)
-                        lasers.add(new HMLaser(320, 15, 60));
+                        lasers.add(new VMLaser(320, 15, 60));
 
                     if (level == 6)
-                        lasers.add(new VMLaser(320, 15, 60));
+                        lasers.add(new HMLaser(320, 15, 60));
 
                     if (spawnAmount < 3)
                         spawnAmount++;

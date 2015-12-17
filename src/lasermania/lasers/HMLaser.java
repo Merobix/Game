@@ -4,12 +4,12 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 /**
- *  Created by Philip on 09.12.2015.
+ * Created by Philip on 09.12.2015.
  */
-public class HMLaser extends HLaser{
+public class HMLaser extends HLaser {
 
     private int origW;
-    private boolean moveRight;
+    private boolean moveUp;
 
     public HMLaser(int x, int w, int startFrame) {
         super(x, w, startFrame);
@@ -33,31 +33,30 @@ public class HMLaser extends HLaser{
             }
         }
 
-        if (getX() - origW < 0)
-            moveRight = true;
-        else if (getX()+ origW > 640)
-            moveRight = false;
+        if (getY() - origW < 0)
+            moveUp = true;
+        else if (getY()+ origW > 480)
+            moveUp = false;
 
-        if (moveRight)
-            addX(3);
+        if (moveUp)
+            addY(3);
         else
-            addX(-3);
+            addY(-3);
     }
 
     @Override
     public void draw(GraphicsContext g) {
-        int x = getX();
+        int y = getY();
         int w = getW();
 
         g.setFill(new Color(1, 0, 0, 0.5).darker());
-        g.fillRect(x - w, 0, 2 * w, 480);
+        g.fillRect(0, y - w, 640, 2 * w);
 
         if (getFC() >= getStartFrame()) {
             g.setFill(Color.WHITE);
-            g.fillRect(x - w, 0, 2 * w, 480);
+            g.fillRect(0, y - w, 640, 2 * w);
         }
 
         incFC();
     }
-
 }

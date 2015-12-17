@@ -4,38 +4,40 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 /**
- * Created by Philip on 09.12.2015.
+ *  Created by Philip on 09.12.2015.
  */
 public class VLaser extends Laser {
 
-    public VLaser(int y, int w, int startFrame) {
-        super(0, y, w, startFrame);
+    public VLaser(int x, int w, int startFrame) {
+        super(x, 0, w, startFrame);
     }
 
-    public VLaser(int y, int w, int startFrame, int delay) {
-        super(0, y, w, startFrame, delay);
+    public VLaser(int x, int w, int startFrame, int delay) {
+        super(x, 0, w, startFrame, delay);
     }
 
     public LK getKind() {
-        return LK.V;
+        return LK.H;
     }
+
     @Override
     public void draw(GraphicsContext g) {
-        int y = getY();
+        int x = getX();
         int w = getW();
 
         if (getFC() < getStartFrame()) {
 
-            if (getRedW() < w - 0.1)
+            if (getRedW() < w - 0.1) {
                 incRedW();
+            }
 
             g.setFill(new Color(1, 0, 0, 0.5).darker());
-            g.fillRect(0, y - getRedW(), 640, 2 * getRedW());
+            g.fillRect(x - getRedW(), 0, 2 * getRedW(), 480);
         }
         else {
             if (w >= 0) {
                 g.setFill(Color.WHITE);
-                g.fillRect(0, y - w, 640, 2 * w);
+                g.fillRect(x - w, 0, 2 * w, 480);
             }
         }
 

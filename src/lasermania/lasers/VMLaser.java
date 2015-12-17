@@ -4,12 +4,12 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 /**
- * Created by Philip on 09.12.2015.
+ *  Created by Philip on 09.12.2015.
  */
 public class VMLaser extends VLaser {
 
     private int origW;
-    private boolean moveUp;
+    private boolean moveRight;
 
     public VMLaser(int x, int w, int startFrame) {
         super(x, w, startFrame);
@@ -33,30 +33,31 @@ public class VMLaser extends VLaser {
             }
         }
 
-        if (getY() - origW < 0)
-            moveUp = true;
-        else if (getY()+ origW > 480)
-            moveUp = false;
+        if (getX() - origW < 0)
+            moveRight = true;
+        else if (getX()+ origW > 640)
+            moveRight = false;
 
-        if (moveUp)
-            addY(3);
+        if (moveRight)
+            addX(3);
         else
-            addY(-3);
+            addX(-3);
     }
 
     @Override
     public void draw(GraphicsContext g) {
-        int y = getY();
+        int x = getX();
         int w = getW();
 
         g.setFill(new Color(1, 0, 0, 0.5).darker());
-        g.fillRect(0, y - w, 640, 2 * w);
+        g.fillRect(x - w, 0, 2 * w, 480);
 
         if (getFC() >= getStartFrame()) {
             g.setFill(Color.WHITE);
-            g.fillRect(0, y - w, 640, 2 * w);
+            g.fillRect(x - w, 0, 2 * w, 480);
         }
 
         incFC();
     }
+
 }

@@ -69,7 +69,7 @@ public class Player {
     public void update() {
 
         if (isHit) {
-            HP--;
+            //HP--;
 
             if (HP == 0)
                 isDead = true;

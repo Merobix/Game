@@ -1,9 +1,9 @@
 package lasermania;
 
 import lasermania.lasers.CLaser;
-import lasermania.lasers.HLaser;
-import lasermania.lasers.Laser;
 import lasermania.lasers.VLaser;
+import lasermania.lasers.Laser;
+import lasermania.lasers.HLaser;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -39,33 +39,33 @@ public class ScoreMode implements Mode {
 
                 case 1:
                     if (r < 3)
-                        lasers.add(new HLaser(pX + pR, 10, 38));
+                        lasers.add(new VLaser(pX + pR, 10, 38));
                     else
-                        lasers.add(new VLaser(pY + pR, 10, 38));
+                        lasers.add(new HLaser(pY + pR, 10, 38));
                     break;
 
                 case 2:
                     if (r < 2) {
                         int temp = pX - 40 + rand.nextInt(80);
-                        lasers.add(new HLaser(temp, 10, 38));
+                        lasers.add(new VLaser(temp, 10, 38));
 
                         temp = temp < pX ? temp + 20 + rand.nextInt(40 + (pX - temp - 20)) : temp - 20 - rand.nextInt(40 + (temp - pX - 20));
 
-                        lasers.add(new HLaser(temp, 10, 38));
+                        lasers.add(new VLaser(temp, 10, 38));
                     }
 
                     else if (r < 4) {
                         int temp = pY - 40 + rand.nextInt(80);
-                        lasers.add(new VLaser(temp, 10, 38));
+                        lasers.add(new HLaser(temp, 10, 38));
 
                         temp = temp < pY ? temp + 20 + rand.nextInt(40 + (pY - temp - 20)) : temp - 20 - rand.nextInt(40 - (temp - pY - 20));
 
-                        lasers.add(new VLaser(temp, 10, 38));
+                        lasers.add(new HLaser(temp, 10, 38));
                     }
 
                     else {
-                        lasers.add(new HLaser(pX - 40 + rand.nextInt(80), 10, 38));
-                        lasers.add(new VLaser(pY - 40 + rand.nextInt(80), 10, 38));
+                        lasers.add(new VLaser(pX - 40 + rand.nextInt(80), 10, 38));
+                        lasers.add(new HLaser(pY - 40 + rand.nextInt(80), 10, 38));
                     }
                     break;
 
@@ -77,23 +77,23 @@ public class ScoreMode implements Mode {
                 case 3:
                     if (r < 3) {
                         int temp = pX - 80 + rand.nextInt(160);
-                        lasers.add(new HLaser(temp, 10, 38));
+                        lasers.add(new VLaser(temp, 10, 38));
 
                         temp = temp < pX ? temp + 20 + rand.nextInt(80 + (pX - temp - 20)) : temp - 20 - rand.nextInt(80 + (temp - pX - 20));
 
-                        lasers.add(new HLaser(temp, 10, 38));
+                        lasers.add(new VLaser(temp, 10, 38));
 
-                        lasers.add(new VLaser(pY - 80 + rand.nextInt(160), 10, 38));
+                        lasers.add(new HLaser(pY - 80 + rand.nextInt(160), 10, 38));
                     }
                     else {
                         int temp = pY - 80 + rand.nextInt(160);
-                        lasers.add(new VLaser(temp, 10, 38));
+                        lasers.add(new HLaser(temp, 10, 38));
 
                         temp = temp < pY ? temp + 20 + rand.nextInt(80 + (pY - temp - 20)) : temp - 20 - rand.nextInt(80 - (temp - pY - 20));
 
-                        lasers.add(new VLaser(temp, 10, 38));
+                        lasers.add(new HLaser(temp, 10, 38));
 
-                        lasers.add(new HLaser(pX - 80 + rand.nextInt(160), 10, 38));
+                        lasers.add(new VLaser(pX - 80 + rand.nextInt(160), 10, 38));
                     }
             }
         }

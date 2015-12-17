@@ -2,6 +2,7 @@ package lasermania;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 
 import java.util.Timer;
 
@@ -24,7 +25,7 @@ public class SoundMaker {
             dog.setCycleCount(MediaPlayer.INDEFINITE);
 
             music = new MediaPlayer(new Media(getClass().getResource("media/BrainPower.mp3").toURI().toString()));
-
+            //music.setStartTime(Duration.seconds(15));
         } catch (Exception e) {
             e.printStackTrace();
         }
