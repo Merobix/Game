@@ -1,5 +1,7 @@
-package lasermania;
+package lasermania.spawner;
 
+import lasermania.Player;
+import lasermania.SoundMaker;
 import lasermania.lasers.CLaser;
 import lasermania.lasers.VLaser;
 import lasermania.lasers.Laser;
@@ -11,15 +13,15 @@ import java.util.Random;
 /**
  *  Created by Philip on 10.12.2015.
  */
-public class ScoreMode implements Mode {
+public class ScoreSpawner implements Spawner {
 
     private Player player;
     private SoundMaker sounds;
     private Random rand;
 
-    public ScoreMode(Player player, Random rand, SoundMaker sounds) {
+    public ScoreSpawner(Player player, SoundMaker sounds) {
         this.player = player;
-        this.rand = rand;
+        rand = new Random();
         this.sounds = sounds;
     }
 

@@ -1,24 +1,22 @@
-package lasermania;
+package lasermania.spawner;
 
+import lasermania.Player;
 import lasermania.lasers.CLaser;
 import lasermania.lasers.VLaser;
 import lasermania.lasers.Laser;
 import lasermania.lasers.HLaser;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  *  Created by Philip on 10.12.2015.
  */
-public class MusicMode implements Mode {
+public class MusicSpawner implements Spawner {
 
     private Player player;
-    private Random rand;
 
-    public MusicMode(Player player, Random rand) {
+    public MusicSpawner(Player player) {
         this.player = player;
-        this.rand = rand;
     }
 
     @Override

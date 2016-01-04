@@ -3,10 +3,12 @@ package lasermania;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.io.Serializable;
+
 /**
  * Created by Philip on 04.12.2015.
  */
-public class Player {
+public class Player implements Serializable{
 
     private int x, y, r;
     private boolean left, right, up, down;
@@ -69,7 +71,7 @@ public class Player {
     public void update() {
 
         if (isHit) {
-            //HP--;
+            HP--;
 
             if (HP == 0)
                 isDead = true;
